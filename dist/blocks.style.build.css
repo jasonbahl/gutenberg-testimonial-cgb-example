@@ -4,15 +4,53 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
-/**
- * #.# Styles
- *
- * CSS for both Frontend+Backend.
- */
 .wp-block-cgb-block-testimonial-cgb {
-  background: orangered;
-  border: 0.2rem solid #292929;
-  color: #292929;
-  margin: 0 auto;
-  max-width: 740px;
-  padding: 2rem; }
+  background: blue;
+  color: #f4f4f4;
+  padding: 30px; }
+
+.cgb-testimonial-info {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin-top: 15px;
+  min-height: 55px;
+  padding-top: 5px;
+  line-height: 1.4;
+  text-align: left; }
+
+.cgb-testimonial-info.right {
+  text-align: right; }
+
+.cgb-testimonial-avatar-wrap {
+  position: absolute;
+  left: 0;
+  top: 0; }
+
+.cgb-testimonial-avatar-wrap .components-button .icon {
+  background: #eaeaea;
+  height: 55px;
+  width: 55px;
+  border: 1px solid #ccc;
+  text-align: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center; }
+
+.cgb-testimonial-info.right .cgb-testimonial-avatar-wrap {
+  right: 0; }
+
+.cgb-testimonial-avatar-wrap img,
+.cgb-testimonial-avatar-wrap img.cgb-testimonial-avatar {
+  max-width: 55px; }
+
+.cgb-testimonial-avatar-name {
+  color: #f4f4f4;
+  margin: 0;
+  margin-right: 81px;
+  margin-left: 81px;
+  left: 0;
+  padding: 0; }
