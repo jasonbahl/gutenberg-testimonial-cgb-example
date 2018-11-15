@@ -1,5 +1,9 @@
+import classnames from 'classnames';
+
 import './style.scss';
 import './editor.scss';
+
+import icons from './icons';
 
 const { __ } = wp.i18n;
 const { Component } = wp.element;
@@ -21,7 +25,9 @@ class Inspector extends Component {
     constructor( props ) {
         super( ...arguments );
     }
-	render() {
+
+    render() {
+
         const backgroundColors = [
             { color: '#00d1b2', name: 'teal' },
             { color: '#3373dc', name: 'royal blue' },
@@ -39,8 +45,7 @@ class Inspector extends Component {
         ];
 
         const { setAttributes, attributes: { background_color, alignment, text_color }} = this.props;
-
-        return(
+        return (
             <InspectorControls key="inspector">
                 <PanelBody>
                     <PanelColorSettings
@@ -72,14 +77,16 @@ class Inspector extends Component {
                         value={ alignment }
                         onChange={ ( value ) => this.props.setAttributes( { alignment: value } ) }
                     />
-				</PanelBody>
-			</InspectorControls>
-		);
-	}
+                </PanelBody>
+            </InspectorControls>
+        );
+    }
 }
 
-class EditBlockContent  extends Component {
-	render() {
+class CGBTestimonialBlock extends Component {
+
+    render() {
+
         const {
             attributes: {
                 testimonial,
@@ -92,42 +99,89 @@ class EditBlockContent  extends Component {
             },
             setAttributes
         } = this.props;
-		return[
-			<Inspector { ...{ setAttributes, ...this.props } } />,
-			<div id="cgb-testimonial" className="cgb-testimonial">
-				<div className="cgb-testimonial-text">
-					{testimonial}
-				</div>
-				<div className="cgb-testimonial-info">
-					<div className="cgb-testimonial-avatar-wrap">
-						<img src={avatarUrl}/>
-					</div>
-					<h2 className="cgb-testimonial-avatar-name">
-						{name}
-					</h2>
-				</div>
-			</div>,
-		];
-	}
-};
 
-class EditBlock extends Component {
-	render( ) {
-		return [
-			<BlockContent />
-		];
-	}
+        return[
+            <Inspector
+                { ...{ setAttributes, ...this.props } }
+            />,
+            <div id="cgb-testimonial" className="cgb-testimonial" style={{
+                backgroundColor: background_color,
+                color: text_color,
+                padding: '30px',
+            }}>
+                <RichText
+                    tagName="div"
+                    multiline="p"
+                    placeholder={ __( 'Add testimonial text...' ) }
+                    keepPlaceholderOnFocus
+                    value={ testimonial }
+                    formattingControls={ [ 'bold', 'italic', 'strikethrough', 'link' ] }
+                    className={ classnames(
+                        'cgb-testimonial-text'
+                    ) }
+                    style={ {
+                        color: text_color
+                    } }
+                    onChange={ ( value ) => setAttributes( { testimonial: value } ) }
+                />
+                <div className={ classnames('cgb-testimonial-info', alignment)}>
+                    <div className={classnames('cgb-testimonial-avatar-wrap')}>
+                        <MediaUpload
+                            buttonProps={ {
+                                className: 'change-image'
+                            } }
+                            onSelect={
+                                (img) => setAttributes({
+                                    avatarUrl: img.url,
+                                    avatarId: img.id
+                                })
+                            }
+                            type="image"
+                            value={ avatarId }
+                            render={ ( { open } ) => (
+                                <Button onClick={ open }>
+                                    { ! avatarId ? <div className="icon">{icons.upload}</div> : <img
+                                        className="cgb-testimonial-avatar"
+                                        src={ avatarUrl }
+                                        alt="avatar"
+                                    />  }
+                                </Button>
+                            ) }
+                        >
+                        </MediaUpload>
+                    </div>
+                    <h2 className="cgb-testimonial-avatar-name">
+                        <RichText
+                            tagName="h2"
+                            placeholder={ __( 'Add name...' ) }
+                            keepPlaceholderOnFocus
+                            value={ name }
+                            formattingControls={ [ 'bold', 'italic', 'strikethrough', 'link' ] }
+                            className={ classnames(
+                                'cgb-testimonial-avatar-name'
+                            ) }
+                            style={ {
+                                textAlign: alignment,
+                                color: text_color
+                            } }
+                            onChange={ ( value ) => setAttributes( { name: value } ) }
+                        />
+                    </h2>
+                </div>
+            </div>
+        ];
+    }
 }
 
-registerBlockType( 'cgb/testimonial', {
-	title: __( 'Testimonial - CGB' ),
-	icon: 'shield',
-	category: 'common',
-	keywords: [
-		__( 'testimonial' ),
-		__( 'create guten block Example' ),
-		__( 'cgb' ),
-	],
+registerBlockType( 'cgb/block-testimonial-cgb', {
+    title: __( 'testimonial-cgb - CGB Block' ),
+    icon: 'shield',
+    category: 'common',
+    keywords: [
+        __( 'testimonial' ),
+        __( 'quote' ),
+        __( 'cgb' ),
+    ],
     attributes: {
         testimonial: {
             type: 'string',
@@ -158,25 +212,40 @@ registerBlockType( 'cgb/testimonial', {
             default: 'left'
         }
     },
-	edit: EditBlockContent,
-	save: function( props ) {
-        const testimonial = 'Testimonial...';
-        const avatarUrl = 'https://placehold.it/55x55';
-        const name = 'Citation Name';
-        return(
-            <div id="cgb-testimonial" className="cgb-testimonial">
-                <div className="cgb-testimonial-text">
-                    {testimonial}
-                </div>
-                <div className="cgb-testimonial-info">
+    edit: CGBTestimonialBlock,
+    save: function( props ) {
+        const { attributes: { testimonial, avatarUrl, name, background_color, text_color, alignment }} = props;
+        return (
+            <div id="cgb-testimonial" className="cgb-testimonial" style={{
+                backgroundColor: background_color,
+                color: text_color
+            }}>
+                { testimonial && !! testimonial.length && (
+                    <RichText.Content
+                        tagName="div"
+                        className="cgb-testimonial-text"
+                        style={ {
+                            color: text_color
+                        } }
+                        value={ testimonial }
+                    />
+                )}
+                <div className={classnames('cgb-testimonial-info', alignment)}>
                     <div className="cgb-testimonial-avatar-wrap">
                         <img src={avatarUrl}/>
                     </div>
-                    <h2 className="cgb-testimonial-avatar-name">
-                        {name}
-                    </h2>
+                    { name && !! name.length && (
+                        <RichText.Content
+                            tagName="h2"
+                            className="cgb-testimonial-avatar-name"
+                            style={ {
+                                color: text_color
+                            } }
+                            value={ name }
+                        />
+                    )}
                 </div>
             </div>
         );
-	},
+    },
 } );
